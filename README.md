@@ -1,1 +1,1 @@
-# Squad-Creator
+# Squad Claimer
