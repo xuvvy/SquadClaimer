@@ -12,7 +12,7 @@ squadlog := % localappdata . "\SquadGame\Saved\Logs\SquadGame.log"
 global NameVersion = "Squad Claimer v1.0.0"
 global LastPos := 0
 
-FileDelete, debug.log
+;FileDelete, debug.log
 
 ; Create the INI if it doesn't exist
 if !FileExist("config.ini")
@@ -114,7 +114,6 @@ ToggleScript:
     Toggle := !Toggle
     if (Toggle) {
         SetTimer, ReadLog, %Interval%
-        OutputDebug, ReadLog is %Interval%
         GuiControl,, StartStop, Stop
         Gui, Show, , Squad Claimer - Running
         If FileExist("SquadClaimer1.ico")
@@ -128,7 +127,6 @@ ToggleScript:
         }
     } else {
         SetTimer, ReadLog, Off
-        OutputDebug, Readlog is Off
         GuiControl,, StartStop, Start
         Gui, Show, , Squad Claimer - Stopped
         If FileExist("SquadClaimer2.ico")
@@ -151,7 +149,6 @@ ReadLog:
         lines := Monitor(file)
         if (InStr(lines, "WORLD TRANSLATION BEGIN") && WinActive("ahk_exe SquadGame.exe"))
         {
-            OutputDebug, PHRASE DETECTED IN THE LOGFILE!
             Send, {%ConsoleKey% down}
             Send, {%ConsoleKey% up}
             Send, createsquad %SquadName% 1
@@ -183,10 +180,11 @@ Monitor(file) ; Return all new non-empty lines of file
     LastPos := FileObj.Pos ; Remember the last read position
     FileObj.Close() ; Close the file
     newLines := RTrim(newLines, "`n") ; Remove the trailing newline
-    Debug(newLines)
+    ;Debug(newLines)
     return newLines
 }
 
+/*
 Debug(newLines) ; Output new lines to the debugger and log file
 {
     if (newLines != "")
@@ -195,3 +193,4 @@ Debug(newLines) ; Output new lines to the debugger and log file
         FileAppend, % newLines, debug.log
     }
 }
+*/
