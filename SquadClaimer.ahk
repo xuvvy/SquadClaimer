@@ -76,7 +76,6 @@ ShowGUI:
     Gui, Show
     If (Toggle) && FileExist("SquadClaimer1.ico")
     {
-        DllCall("DestroyIcon", "ptr", hIcon)
         hIcon := DllCall("LoadImage", uint, 0, str, A_ScriptDir "\SquadClaimer1.ico", uint, 1, int, 0, int, 0, uint, 0x10)  ; Type, Width, Height, Flags
         Gui +LastFound  ; Set the "last found window" for use in the next lines.
         SendMessage, 0x80, 0, hIcon  ; Set the window's small icon (0x80 is WM_SETICON).
@@ -84,7 +83,6 @@ ShowGUI:
     }
     Else If FileExist("SquadClaimer2.ico")
     {
-        DllCall("DestroyIcon", "ptr", hIcon)
         hIcon := DllCall("LoadImage", uint, 0, str, A_ScriptDir "\SquadClaimer2.ico", uint, 1, int, 0, int, 0, uint, 0x10)  ; Type, Width, Height, Flags
         Gui +LastFound  ; Set the "last found window" for use in the next lines.
         SendMessage, 0x80, 0, hIcon  ; Set the window's small icon (0x80 is WM_SETICON).
@@ -139,7 +137,6 @@ ToggleScript:
         If FileExist("SquadClaimer1.ico")
         {
             Menu, tray, Icon, SquadClaimer1.ico
-            DllCall("DestroyIcon", "ptr", hIcon)
             hIcon := DllCall("LoadImage", uint, 0, str, A_ScriptDir "\SquadClaimer1.ico", uint, 1, int, 0, int, 0, uint, 0x10)  ; Type, Width, Height, Flags
             Gui +LastFound  ; Set the "last found window" for use in the next lines.
             SendMessage, 0x80, 0, hIcon  ; Set the window's small icon (0x80 is WM_SETICON).
@@ -152,7 +149,6 @@ ToggleScript:
         If FileExist("SquadClaimer2.ico")
         {
             Menu, tray, Icon, SquadClaimer2.ico
-            DllCall("DestroyIcon", "ptr", hIcon)
             hIcon := DllCall("LoadImage", uint, 0, str, A_ScriptDir "\SquadClaimer2.ico", uint, 1, int, 0, int, 0, uint, 0x10)  ; Type, Width, Height, Flags
             Gui +LastFound  ; Set the "last found window" for use in the next lines.
             SendMessage, 0x80, 0, hIcon  ; Set the window's small icon (0x80 is WM_SETICON).
