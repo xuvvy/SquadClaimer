@@ -12,7 +12,7 @@ squadlog := % localappdata . "\SquadGame\Saved\Logs\SquadGame.log"
 global NameVersion = "Squad Claimer v1.0.0"
 global LastPos := 0
 
-;FileDelete, debug.log
+FileDelete, debug.log ; Delete the previous debug log
 
 ; Create the INI if it doesn't exist
 if !FileExist("config.ini")
@@ -29,9 +29,10 @@ IniRead, hotkey, config.ini, Settings, ToggleKey, End
 IniRead, consolekey, config.ini, Settings, ConsoleKey, ~
 IniRead, timerinterval, config.ini, Settings, Interval, 100
 
-SetTimer, ReadLog, %timerinterval% ; Calls ReadLog at an interval
+SetTimer, ReadLog, %timerinterval%
 Hotkey, %hotkey%, ToggleScript
 
+; Set up System Tray and Icons
 If FileExist("SquadClaimer1.ico")
 {
     Menu, tray, Icon, SquadClaimer1.ico
@@ -43,6 +44,9 @@ Menu, Tray, Add, % NameVersion, ShowGUI
 Menu, Tray, Default, % NameVersion
 Menu, Tray, Add
 Menu, Tray, Add, Exit, ExitApp
+
+; Mouse movement detection for GUI Tooltip
+OnMessage(0x200, "Help")
 
 ; GUI
 Gui, Font, s12
@@ -56,8 +60,6 @@ Gui, Add, Text,, Script Refresh Interval `(ms)
 Gui, Add, Edit, vInterval gUpdate w60, %timerinterval%
 Gui, Add, Button, gToggleScript vStartStop, Stop
 Gui, Show, w300, Squad Claimer - Running
-
-OnMessage(0x200, "Help")
 
 Update:
 Gui, Submit, NoHide
@@ -83,6 +85,7 @@ ExitApp:
     ExitApp,
     return
 
+; GUI Tooltip
 Help(wParam, lParam, Msg) 
 {
     Sleep, 1000
@@ -180,12 +183,12 @@ Monitor(file) ; Return all new non-empty lines of file
     LastPos := FileObj.Pos ; Remember the last read position
     FileObj.Close() ; Close the file
     newLines := RTrim(newLines, "`n") ; Remove the trailing newline
-    ;Debug(newLines)
+    Debug(newLines)
     return newLines
 }
 
-/*
-Debug(newLines) ; Output new lines to the debugger and log file
+; Debug and log found lines
+Debug(newLines)
 {
     if (newLines != "")
     {
@@ -193,4 +196,3 @@ Debug(newLines) ; Output new lines to the debugger and log file
         FileAppend, % newLines, debug.log
     }
 }
-*/
