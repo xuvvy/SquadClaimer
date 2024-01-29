@@ -3,6 +3,7 @@ SendMode Input
 SetWorkingDir %A_ScriptDir%
 #Persistent
 #SingleInstance, force
+#Include lib\AddToolTip.ahk
 
 Toggle := 1
 
@@ -45,21 +46,25 @@ Menu, Tray, Default, % NameVersion
 Menu, Tray, Add
 Menu, Tray, Add, Exit, ExitApp
 
-; Mouse movement detection for GUI Tooltip
-OnMessage(0x200, "Help")
-
 ; GUI
 Gui, Font, s12
 Gui, Add, Text,, Squad Name
-Gui, Add, Edit, vSquadName gUpdate w270, %squadname%
+Gui, Add, Edit, vSquadName gUpdate w270 hwndhSquadName, %squadname%
 Gui, Add, Text,, Script Toggle Key
-Gui, Add, Hotkey, vToggleKey gUpdate w150, %hotkey%
+Gui, Add, Hotkey, vToggleKey gUpdate w150 hwndhToggleKey, %hotkey%
 Gui, Add, Text,, Game Console Key
-Gui, Add, Edit, vConsoleKey gUpdate w150, %consolekey%
+Gui, Add, Edit, vConsoleKey gUpdate w150 hwndhConsoleKey, %consolekey%
 Gui, Add, Text,, Script Refresh Interval `(ms)
-Gui, Add, Edit, vInterval gUpdate w60, %timerinterval%
-Gui, Add, Button, gToggleScript vStartStop, Stop
+Gui, Add, Edit, vInterval gUpdate w60 hwndhInterval, %timerinterval%
+Gui, Add, Button, gToggleScript vStartStop hwndhStartStop, Stop
 Gui, Show, w300, Squad Claimer - Running
+
+; Tooltips
+AddToolTip(hSquadName, "Enter the name of the squad you wish to create")
+AddToolTip(hToggleKey, "Enter the key to Start/Stop the script")
+AddToolTip(hConsoleKey, "Enter the key to open the in-game console")
+AddToolTip(hInterval, "Enter the rate, in milliseconds, at which the script runs and makes checks")
+AddToolTip(hStartStop, "Start/Stop the script")
 
 Update:
 Gui, Submit, NoHide
@@ -99,34 +104,6 @@ ExitApp:
     DllCall("DestroyIcon", "ptr", hIcon)
     ExitApp,
     return
-
-; GUI Tooltip
-Help(wParam, lParam, Msg) 
-{
-    Sleep, 1000
-    MouseGetPos,,,, OutputVarControl
-    IfEqual, OutputVarControl, Edit1
-    {
-        Help := "Enter the name of the squad you wish to create"
-    }
-    else IfEqual, OutputVarControl, ToggleKey
-    {
-        Help := "Enter the key to Start/Stop the script"
-    }
-    else IfEqual, OutputVarControl, Edit2
-    {
-        Help := "Enter the key to open the in-game console"
-    }
-    else IfEqual, OutputVarControl, Edit3
-    {
-        Help := "Enter the rate, in milliseconds, at which the script runs and makes checks"
-    }
-    else IfEqual, OutputVarControl, Button1
-    {
-        Help := "Start/Stop the script"
-    }
-    ToolTip % Help
-}
 
 ToggleScript:
     Toggle := !Toggle
