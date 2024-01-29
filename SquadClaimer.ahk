@@ -71,8 +71,25 @@ Hotkey, %hotkey%, ToggleScript
 SetTimer, ReadLog, %Interval%
 return
 
+; Showing GUI and preventing icon reset when GUI is toggled
 ShowGUI:
     Gui, Show
+    If (Toggle) && FileExist("SquadClaimer1.ico")
+    {
+        DllCall("DestroyIcon", "ptr", hIcon)
+        hIcon := DllCall("LoadImage", uint, 0, str, A_ScriptDir "\SquadClaimer1.ico", uint, 1, int, 0, int, 0, uint, 0x10)  ; Type, Width, Height, Flags
+        Gui +LastFound  ; Set the "last found window" for use in the next lines.
+        SendMessage, 0x80, 0, hIcon  ; Set the window's small icon (0x80 is WM_SETICON).
+        SendMessage, 0x80, 1, hIcon  ; Set the window's big icon to the same one.
+    }
+    Else If FileExist("SquadClaimer2.ico")
+    {
+        DllCall("DestroyIcon", "ptr", hIcon)
+        hIcon := DllCall("LoadImage", uint, 0, str, A_ScriptDir "\SquadClaimer2.ico", uint, 1, int, 0, int, 0, uint, 0x10)  ; Type, Width, Height, Flags
+        Gui +LastFound  ; Set the "last found window" for use in the next lines.
+        SendMessage, 0x80, 0, hIcon  ; Set the window's small icon (0x80 is WM_SETICON).
+        SendMessage, 0x80, 1, hIcon  ; Set the window's big icon to the same one.
+    }
     return
 
 GuiClose:
