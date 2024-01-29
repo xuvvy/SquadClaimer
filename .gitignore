@@ -1,6 +1,8 @@
 # Folders
-release/
+rel/
+lib/
 
 # File Extensions
 *.exe
 *.zip
+*.log
