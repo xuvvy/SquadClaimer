@@ -109,15 +109,15 @@ Help(wParam, lParam, Msg)
     {
         Help := "Enter the name of the squad you wish to create"
     }
-    else IfEqual, OutputVarControl, Edit2
+    else IfEqual, OutputVarControl, ToggleKey
     {
         Help := "Enter the key to Start/Stop the script"
     }
-    else IfEqual, OutputVarControl, Edit3
+    else IfEqual, OutputVarControl, Edit2
     {
         Help := "Enter the key to open the in-game console"
     }
-    else IfEqual, OutputVarControl, Edit4
+    else IfEqual, OutputVarControl, Edit3
     {
         Help := "Enter the rate, in milliseconds, at which the script runs and makes checks"
     }
