@@ -50,6 +50,8 @@ There are several new features that might be added in the future and ways in whi
 
 * Better round-start detection for even faster squad creation
 
+* Allow easier and more convenient hotkey setting through the GUI
+
 * Etc.
 
 # Development & Contributions
