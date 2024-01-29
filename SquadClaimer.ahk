@@ -53,7 +53,7 @@ Gui, Font, s12
 Gui, Add, Text,, Squad Name
 Gui, Add, Edit, vSquadName gUpdate w270, %squadname%
 Gui, Add, Text,, Script Toggle Key
-Gui, Add, Edit, vToggleKey gUpdate w150, %hotkey%
+Gui, Add, Hotkey, vToggleKey gUpdate w150, %hotkey%
 Gui, Add, Text,, Game Console Key
 Gui, Add, Edit, vConsoleKey gUpdate w150, %consolekey%
 Gui, Add, Text,, Script Refresh Interval `(ms)
