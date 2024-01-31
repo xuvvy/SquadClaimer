@@ -140,7 +140,7 @@ ReadLog:
     {
         file := squadlog ; Squad log file
         lines := Monitor(file)
-        if (InStr(lines, "WORLD TRANSLATION BEGIN") && WinActive("ahk_exe SquadGame.exe"))
+        if ((InStr(lines, "seconds to LoadMap") || InStr(lines, "WORLD TRANSLATION BEGIN {0, 0, 0}")) && WinActive("ahk_exe SquadGame.exe"))
         {
             Send, {%ConsoleKey% down}
             Send, {%ConsoleKey% up}
@@ -164,10 +164,10 @@ Monitor(file) ; Return all new non-empty lines of file
     FileObj.Seek(LastPos) ; Move to the last read position
     while FileObj.Pos < FileSize ; While there's more data to read,
     {
-        line := Trim(FileObj.ReadLine()) ; read a line and remove leading/trailing white space
-        if (line != "") ; Ignore empty lines
+        trLine := Trim(FileObj.ReadLine()) ; read a line and remove leading/trailing white space
+        if (trLine != "") ; Ignore empty lines
         {
-            newLines .= line
+            newLines .= trLine
         }
     }
     LastPos := FileObj.Pos ; Remember the last read position
