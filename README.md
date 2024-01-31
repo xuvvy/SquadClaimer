@@ -40,6 +40,8 @@ Squad Claimer is a simple and lightweight tool for the game Squad, written in Au
 
 * There is currently no way to manually create a squad using Squad Claimer (planned!)
 
+* May not work in offline training
+
 ## Future
 
 There are several new features that might be added in the future and ways in which existing ones might be improved:
