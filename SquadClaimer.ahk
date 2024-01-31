@@ -10,7 +10,7 @@ Toggle := 1
 EnvGet, localappdata, localappdata
 squadlog := % localappdata . "\SquadGame\Saved\Logs\SquadGame.log"
 
-global NameVersion = "Squad Claimer v1.1.1"
+global NameVersion = "Squad Claimer v2.0.0"
 global LastPos := 0
 
 FileDelete, debug.log ; Delete the previous debug log
@@ -22,6 +22,7 @@ if !FileExist("config.ini")
     IniWrite, End, config.ini, Settings, ToggleKey
     IniWrite, ~, config.ini, Settings, ConsoleKey
     IniWrite, 100, config.ini, Settings, Interval
+    IniWrite, 1, config.ini, Settings, AlwaysOnTop
 }
 
 ; Read from INI
@@ -29,6 +30,7 @@ IniRead, squadname, config.ini, Settings, SquadName, Logi
 IniRead, hotkey, config.ini, Settings, ToggleKey, End
 IniRead, consolekey, config.ini, Settings, ConsoleKey, ~
 IniRead, timerinterval, config.ini, Settings, Interval, 100
+IniRead, alwaysontop, config.ini, Settings, AlwaysOnTop, 1
 
 SetTimer, ReadLog, %timerinterval%
 Hotkey, %hotkey%, ToggleScript
@@ -56,7 +58,17 @@ Gui, Add, Text,, Game Console Key
 Gui, Add, Edit, vConsoleKey gUpdate w150 hwndhConsoleKey, %consolekey%
 Gui, Add, Text,, Script Refresh Interval `(ms)
 Gui, Add, Edit, vInterval gUpdate w60 hwndhInterval, %timerinterval%
+if (alwaysontop = 1)
+{    
+    Gui, Add, Checkbox, vAlwaysOnTop gUpdate Checked, Always On Top
+    Gui, +AlwaysOnTop
+}
+else
+{ 
+    Gui, Add, Checkbox, vAlwaysOnTop gUpdate, Always On Top
+}
 Gui, Add, Button, gToggleScript vStartStop hwndhStartStop, Stop
+Gui, Add, Button, gCreateSquad vCreateSquad hwndhCreateSquad x+10, Create a squad
 Gui, Show, w300, Squad Claimer - Running
 
 ; Tooltips
@@ -65,6 +77,7 @@ AddToolTip(hToggleKey, "Enter the key to Start/Stop the script")
 AddToolTip(hConsoleKey, "Enter the key to open the in-game console")
 AddToolTip(hInterval, "Enter the rate, in milliseconds, at which the script runs and makes checks")
 AddToolTip(hStartStop, "Start/Stop the script")
+AddToolTip(hCreateSquad, "Manually create a squad")
 
 Update:
 Gui, Submit, NoHide
@@ -74,6 +87,15 @@ IniWrite, %ConsoleKey%, config.ini, Settings, ConsoleKey
 IniWrite, %Interval%, config.ini, Settings, Interval
 Hotkey, %hotkey%, ToggleScript
 SetTimer, ReadLog, %Interval%
+IniWrite, %AlwaysOnTop%, config.ini, Settings, AlwaysOnTop
+if (AlwaysOnTop = 1)
+{  
+    Gui, +AlwaysOnTop
+}
+else
+{
+    Gui, -AlwaysOnTop
+}
 return
 
 ; Showing GUI and preventing icon reset when GUI is toggled
@@ -134,18 +156,30 @@ ToggleScript:
     }
 return
 
+CreateSquad:
+    Process, Exist, SquadGame.exe
+    If ErrorLevel
+    {
+        ControlSend,, {%ConsoleKey% down}, ahk_exe SquadGame.exe
+        ControlSend,, {%ConsoleKey% up}, ahk_exe SquadGame.exe
+        ControlSend,, createsquad %SquadName% 1, ahk_exe SquadGame.exe
+        ControlSend,, {Enter}, ahk_exe SquadGame.exe
+    }
+return
+
 ReadLog:
     Process, Exist, SquadGame.exe
     If ErrorLevel
     {
         file := squadlog ; Squad log file
         lines := Monitor(file)
-        if ((InStr(lines, "seconds to LoadMap") || InStr(lines, "WORLD TRANSLATION BEGIN {0, 0, 0}")) && WinActive("ahk_exe SquadGame.exe"))
+        ;if ((InStr(lines, "seconds to LoadMap") || InStr(lines, "WORLD TRANSLATION BEGIN {0, 0, 0}")) && WinActive("ahk_exe SquadGame.exe"))
+        if (InStr(lines, "seconds to LoadMap") || InStr(lines, "WORLD TRANSLATION BEGIN {0, 0, 0}"))  
         {
-            Send, {%ConsoleKey% down}
-            Send, {%ConsoleKey% up}
-            Send, createsquad %SquadName% 1
-            Send, {Enter}
+            ControlSend,, {%ConsoleKey% down}, ahk_exe SquadGame.exe
+            ControlSend,, {%ConsoleKey% up}, ahk_exe SquadGame.exe
+            ControlSend,, createsquad %SquadName% 1, ahk_exe SquadGame.exe
+            ControlSend,, {Enter}, ahk_exe SquadGame.exe
         }
     }
 return
