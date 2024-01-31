@@ -9,6 +9,7 @@ Toggle := 1
 
 EnvGet, localappdata, localappdata
 squadlog := % localappdata . "\SquadGame\Saved\Logs\SquadGame.log"
+squadinput := % localappdata . "\SquadGame\Saved\Config\WindowsNoEditor\input.ini"
 
 global NameVersion = "Squad Claimer v2.0.0"
 global LastPos := 0
@@ -20,7 +21,7 @@ if !FileExist("config.ini")
 {
     IniWrite, Logi, config.ini, Settings, SquadName
     IniWrite, End, config.ini, Settings, ToggleKey
-    IniWrite, ~, config.ini, Settings, ConsoleKey
+    IniWrite, %consolekey%, config.ini, Settings, ConsoleKey
     IniWrite, 100, config.ini, Settings, Interval
     IniWrite, 1, config.ini, Settings, AlwaysOnTop
 }
@@ -28,7 +29,7 @@ if !FileExist("config.ini")
 ; Read from INI
 IniRead, squadname, config.ini, Settings, SquadName, Logi
 IniRead, hotkey, config.ini, Settings, ToggleKey, End
-IniRead, consolekey, config.ini, Settings, ConsoleKey, ~
+IniRead, consolekey, config.ini, Settings, ConsoleKey, %consolekey%
 IniRead, timerinterval, config.ini, Settings, Interval, 100
 IniRead, alwaysontop, config.ini, Settings, AlwaysOnTop, 1
 
@@ -55,8 +56,9 @@ Gui, Add, Edit, vSquadName gUpdate w270 hwndhSquadName, %squadname%
 Gui, Add, Text,, Script Toggle Key
 Gui, Add, Hotkey, vToggleKey gUpdate w150 hwndhToggleKey, %hotkey%
 Gui, Add, Text,, Game Console Key
-Gui, Add, Edit, vConsoleKey gUpdate w150 hwndhConsoleKey, %consolekey%
-Gui, Add, Text,, Script Refresh Interval `(ms)
+Gui, Add, Hotkey, vConsoleKey gUpdate w150 hwndhConsoleKey, %consolekey%
+Gui, Add, Button, gAutoDetectCK x+10, Auto-detect
+Gui, Add, Text, x15, Script Refresh Interval `(ms)
 Gui, Add, Edit, vInterval gUpdate w60 hwndhInterval, %timerinterval%
 if (alwaysontop = 1)
 {    
@@ -69,7 +71,7 @@ else
 }
 Gui, Add, Button, gToggleScript vStartStop hwndhStartStop, Stop
 Gui, Add, Button, gCreateSquad vCreateSquad hwndhCreateSquad x+10, Create a squad
-Gui, Show, w300, Squad Claimer - Running
+Gui, Show, w400, Squad Claimer - Running
 
 ; Tooltips
 AddToolTip(hSquadName, "Enter the name of the squad you wish to create")
@@ -165,6 +167,14 @@ CreateSquad:
         ControlSend,, createsquad %SquadName% 1, ahk_exe SquadGame.exe
         ControlSend,, {Enter}, ahk_exe SquadGame.exe
     }
+return
+
+AutoDetectCK:
+    FileRead, InputIniContent, %squadinput%
+    RegExMatch(InputIniContent, "ConsoleKeys=(\S+)", match)
+    firstConsoleKey := match1
+    GuiControl,, ConsoleKey, %FirstConsoleKey%
+    IniWrite, %FirstConsoleKey%, config.ini, Settings, ConsoleKey
 return
 
 ReadLog:
