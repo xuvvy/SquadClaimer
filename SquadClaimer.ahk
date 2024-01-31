@@ -19,17 +19,18 @@ FileDelete, debug.log ; Delete the previous debug log
 ; Create the INI if it doesn't exist
 if !FileExist("config.ini")
 {
-    IniWrite, Logi, config.ini, Settings, SquadName
+    Gosub, AutoDetectCK
+    IniWrite, SquadName, config.ini, Settings, SquadName
     IniWrite, End, config.ini, Settings, ToggleKey
-    IniWrite, %consolekey%, config.ini, Settings, ConsoleKey
+    IniWrite, %FirstConsoleKey%, config.ini, Settings, ConsoleKey
     IniWrite, 100, config.ini, Settings, Interval
     IniWrite, 1, config.ini, Settings, AlwaysOnTop
 }
 
 ; Read from INI
-IniRead, squadname, config.ini, Settings, SquadName, Logi
+IniRead, squadname, config.ini, Settings, SquadName, SquadName
 IniRead, hotkey, config.ini, Settings, ToggleKey, End
-IniRead, consolekey, config.ini, Settings, ConsoleKey, %consolekey%
+IniRead, consolekey, config.ini, Settings, ConsoleKey, %FirstConsoleKey%
 IniRead, timerinterval, config.ini, Settings, Interval, 100
 IniRead, alwaysontop, config.ini, Settings, AlwaysOnTop, 1
 
@@ -162,10 +163,12 @@ CreateSquad:
     Process, Exist, SquadGame.exe
     If ErrorLevel
     {
+        BlockInput, On
         ControlSend,, {%ConsoleKey% down}, ahk_exe SquadGame.exe
         ControlSend,, {%ConsoleKey% up}, ahk_exe SquadGame.exe
         ControlSend,, createsquad %SquadName% 1, ahk_exe SquadGame.exe
         ControlSend,, {Enter}, ahk_exe SquadGame.exe
+        BlockInput, Off
     }
 return
 
@@ -186,10 +189,12 @@ ReadLog:
         ;if ((InStr(lines, "seconds to LoadMap") || InStr(lines, "WORLD TRANSLATION BEGIN {0, 0, 0}")) && WinActive("ahk_exe SquadGame.exe"))
         if (InStr(lines, "seconds to LoadMap") || InStr(lines, "WORLD TRANSLATION BEGIN {0, 0, 0}"))  
         {
+            BlockInput, On
             ControlSend,, {%ConsoleKey% down}, ahk_exe SquadGame.exe
             ControlSend,, {%ConsoleKey% up}, ahk_exe SquadGame.exe
             ControlSend,, createsquad %SquadName% 1, ahk_exe SquadGame.exe
             ControlSend,, {Enter}, ahk_exe SquadGame.exe
+            BlockInput, Off
         }
     }
 return
