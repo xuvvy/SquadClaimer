@@ -10,7 +10,7 @@ Toggle := 1
 EnvGet, localappdata, localappdata
 squadlog := % localappdata . "\SquadGame\Saved\Logs\SquadGame.log"
 
-global NameVersion = "Squad Claimer v1.1.1"
+global NameVersion = "Squad Claimer v1.1.0"
 global LastPos := 0
 
 FileDelete, debug.log ; Delete the previous debug log
